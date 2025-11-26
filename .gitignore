@@ -1,0 +1,70 @@
+# .gitignore for Beverage-System
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs / editors
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.iml
+
+# Visual Studio / .NET
+.vs/
+bin/
+obj/
+TestResults/
+*.cache
+*.ilk
+*.log
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-error.log
+.pnp.*
+.cache/
+coverage/
+dist/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
+.venv/
+env/
+
+# Java / Gradle / Maven
+.gradle/
+build/
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Containers
+docker-compose.override.yml
+
+# Environment / secrets
+.env
+.env.*.local
+secrets.json
+*.key
+*.pem
+
+# Logs and temp files
+*.log
+logs/
+*.tmp
+*.bak
+*.swp
+
+# Misc
+Thumbs.db
+.DS_Store
