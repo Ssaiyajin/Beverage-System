@@ -33,10 +33,10 @@ public class EmployeeService {
         return employee;
     }
 
-    public Employee updateEmployee(int id, Employee employee) {
+    public Employee updateEmployee(int id, EmployeeDTO employeeDto) {
         if (employees.containsKey(id)) {
-            employee.setId(id);
-            employees.put(id, employee);
+            Employee employee = employees.get(id);
+            employee.setName(employeeDto.getName());
             return employee;
         }
         return null;

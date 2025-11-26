@@ -47,8 +47,8 @@ public class EmployeeResource {
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateEmployee(@PathParam("id") int id, Employee employee, @Context UriInfo uriInfo) {
-        Employee updated = EmployeeService.instance.updateEmployee(id, employee);
+    public Response updateEmployee(@PathParam("id") int id, EmployeeDTO employeeDto, @Context UriInfo uriInfo) {
+        Employee updated = EmployeeService.instance.updateEmployee(id, employeeDto);
         if (updated == null) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new ErrorMessage(ErrorType.NOT_FOUND, "Employee not found"))

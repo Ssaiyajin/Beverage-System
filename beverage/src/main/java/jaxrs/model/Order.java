@@ -41,7 +41,7 @@ public class Order {
     }
 
     public void setPositions(List<Integer> positions) {
-        this.positions = positions;
+        this.positions = positions != null ? positions : new ArrayList<>();
     }
 
     public String getStatus() {
