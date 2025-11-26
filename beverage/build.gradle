@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    def jersey = '3.1.1'
+
+    // Jakarta REST API (compile-time types)
+    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
+
+    // Jersey implementation and JSON support
+    implementation "org.glassfish.jersey.core:jersey-server:${jersey}"
+    implementation "org.glassfish.jersey.core:jersey-client:${jersey}"
+    implementation "org.glassfish.jersey.containers:jersey-container-jdk-http:${jersey}"
+    implementation "org.glassfish.jersey.media:jersey-media-json-jackson:${jersey}"
+
+    // JAXB API + runtime for XML binding support
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
+
+    // 🔥 REQUIRED FOR Jersey DI (fixes InjectionManagerFactory error)
+    implementation "org.glassfish.jersey.inject:jersey-hk2:${jersey}"
+    implementation 'org.glassfish.hk2:hk2-api:3.1.0'
+
+    implementation project(':management')
+    // allow beverage module to use classes from the root project (shared controllers / DTOs / models)
+    implementation project(':management')
+}
+
+application {
+    mainClass = 'jaxrs.JaxRsServer'
+}
+
+run {
+    standardInput = System.in
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release.set(21)
+}

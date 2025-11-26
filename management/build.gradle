@@ -1,0 +1,43 @@
+plugins {
+    id 'java-library' // or 'java'
+    id 'application'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+repositories {
+    mavenCentral()
+}
+
+def props = new Properties()
+file("src/main/resources/config.properties").withInputStream { props.load(it) }
+
+application {
+    mainClass.set('jaxrs.JaxRsServer')
+}
+
+dependencies {
+    // make service/core classes available at compile-time
+    implementation project(':core')
+
+    def jerseyVersion = '3.1.1'
+
+    // Jakarta / Jersey / JAXB required by the sources
+    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    implementation "org.glassfish.jersey.core:jersey-server:${jerseyVersion}"
+    implementation "org.glassfish.jersey.core:jersey-client:${jerseyVersion}"
+    implementation "org.glassfish.jersey.containers:jersey-container-jdk-http:${jerseyVersion}"
+    implementation "org.glassfish.jersey.media:jersey-media-json-jackson:${jerseyVersion}"
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
+    implementation 'org.glassfish.jersey.inject:jersey-hk2:3.1.1'
+    implementation 'org.glassfish.hk2:hk2-api:3.1.0'
+
+}
+
+run {
+    standardInput = System.in
+}

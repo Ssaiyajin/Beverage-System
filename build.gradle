@@ -1,0 +1,66 @@
+allprojects {
+    group = 'com.example.beverage'
+    version = '1.0.0'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        // ensure consistent bytecode for JDK 21
+        options.release.set(21)
+    }
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+    }
+}
+
+task runAll {
+    group = 'application'
+    description = 'Build and run beverage and management servers in parallel (separate JVMs).'
+
+    dependsOn ':beverage:classes', ':management:classes'
+
+    doLast {
+        println 'Starting beverage and management servers...'
+
+        // build classpath strings for each subproject
+        def bevCp = project(':beverage').sourceSets.main.runtimeClasspath.files.collect { it.absolutePath }.join(File.pathSeparator)
+        def mgmtCp = project(':management').sourceSets.main.runtimeClasspath.files.collect { it.absolutePath }.join(File.pathSeparator)
+
+        // java executable
+        def javaHome = System.getProperty('java.home')
+        def javaExe = new File(javaHome, 'bin' + File.separator + (OperatingSystem.current().isWindows() ? 'java.exe' : 'java')).absolutePath
+
+        // start beverage
+        def bevCmd = [javaExe, '-cp', bevCp, 'jaxrs.JaxRsServer']
+        def bevProc = bevCmd.execute()
+        bevProc.consumeProcessOutput(System.out, System.err)
+
+        // start management
+        def mgmtCmd = [javaExe, '-cp', mgmtCp, 'jaxrs.JaxRsServer']
+        def mgmtProc = mgmtCmd.execute()
+        mgmtProc.consumeProcessOutput(System.out, System.err)
+
+        println 'Servers started. Press ENTER to stop both.'
+        System.in.read()
+
+        println 'Stopping servers...'
+        bevProc.destroy()
+        mgmtProc.destroy()
+        bevProc.waitForOrKill(5000)
+        mgmtProc.waitForOrKill(5000)
+        println 'Servers stopped.'
+    }
+}
